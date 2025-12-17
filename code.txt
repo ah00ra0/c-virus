@@ -1,2 +1,4 @@
 php -S 127.0.0.1:8000
 npx localtunnel --port 8000 or lt --port 80
+lt --port 8000 --subdomain myfixedname
+

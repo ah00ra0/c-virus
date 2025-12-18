@@ -1,10 +1,12 @@
 #include "winhttpclientc.h"
 #include <stdio.h>
+
 // #include <string.h>
 #include <wchar.h>
 #include <windows.h>
 #include <string.h>
 #include <stdlib.h>
+#include "sds.h"
 
 typedef int(__cdecl *function_nircmd)(char *);
 
@@ -46,6 +48,40 @@ void speak(char name[]){
     if (!fRunTimeLinkSuccess)
         printf("Error!!!!!!");
 }
+void infobox(sds a, sds b){
+     HINSTANCE hinstLib;
+    function_nircmd nircmd;
+    BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
+
+    hinstLib = LoadLibrary(TEXT("nircmd.dll"));
+
+    if (hinstLib != NULL)
+    {
+        nircmd = (function_nircmd)GetProcAddress(hinstLib, "DoNirCmd");
+
+        if (NULL != nircmd)
+        {
+            fRunTimeLinkSuccess = TRUE;
+            // FreeConsole();
+            sds all = sdsnew("infobox");
+            all = sdscatprintf(all," \"%s\" \"%s\"",a,b);
+
+              
+
+            (nircmd)(all);
+            printf("%s",all);
+            sdsfree(a);
+            sdsfree(b);
+            sdsfree(all);
+        }
+
+        fFreeResult = FreeLibrary(hinstLib);
+    }
+    if (!fRunTimeLinkSuccess)
+        printf("Error!!!!!!");
+
+}
+    
 int main (){
     //get
     // wchar_t *url =L"http://httpbin.org/get";
@@ -127,7 +163,13 @@ int main (){
    {
         speak("hack");
         // printf("%s",man);
-   }else
+   }else if (strcmp(man, "002")==0)
+   {
+         infobox("ahoora","0111");
+   }
+   
+   
+   else
    {
          printf("%s","wrong");
    }

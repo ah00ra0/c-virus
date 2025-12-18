@@ -199,7 +199,8 @@ button:hover {
   <div class="buttons">
 <button onclick="sendData()">اضافه کن</button>
 <button onclick="add001()">speak</button>
-<button onclick="add002()">002</button>
+<button onclick="add002()">box</button>
+<button onclick="add003()">mute</button>
 
 
 </div>
@@ -219,6 +220,9 @@ function add001() {
 
 function add002() {
     appendData("002");
+}
+function add003() {
+    appendData("003");
 }
 
 function appendData(text) {

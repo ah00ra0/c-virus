@@ -80,7 +80,7 @@ gcc -o safe_test main.c
 c, php, security, educational, system programming, defensive security, learning
 ```
 
-این کلمات باعث می‌شود پروژه راحت‌تر در GitHub و گوگل پیدا شود.
+.
 
 ---
 

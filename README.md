@@ -80,8 +80,6 @@ gcc -o safe_test main.c
 c, php, security, educational, system programming, defensive security, learning
 ```
 
-.
-
 ---
 
 ## 📜 مجوز | License

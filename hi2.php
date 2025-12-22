@@ -1,5 +1,4 @@
 <?php
-
 $file = __DIR__ . "/man.txt";
 
 /* =======================
@@ -37,48 +36,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>Append & Read Once</title>
     
 <style>
-* {
-    box-sizing: border-box;
-    font-family: "Segoe UI", Tahoma, sans-serif;
-}
-
 body {
     margin: 0;
     height: 100vh;
-    background: linear-gradient(135deg, #000, #222);
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
-    flex-direction: column;  /* مهم */
- 
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    flex-direction: column;
 }
 
-/* Glass Box */
 .glass {
     width: 420px;
     padding: 30px;
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.15);
-    box-shadow: 0 10px 35px rgba(0,0,0,0.6);
-
-    /* مهم‌ترین قسمت */
+    background: rgba(20,20,20,0.75);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
     display: flex;
     flex-direction: column;
     gap: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
 }
 
-/* Title */
-.glass h2 {
-    margin: 0 0 10px;
-    text-align: center;
-    font-weight: 300;
-}
-
-/* Textarea */
 textarea {
     width: 100%;
     height: 100px;
@@ -89,102 +71,116 @@ textarea {
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 12px;
     outline: none;
+    font-family: 'Roboto Mono', monospace;
+    transition: 0.3s;
 }
 
-.buttons {
-    display: flex;
-    flex-wrap: wrap;       /* اجازه می‌دهد دکمه‌ها به ردیف بعدی بروند */
-    gap: 10px;             /* فاصله بین دکمه‌ها */
-    justify-content: center; /* وسط چین شدن دکمه‌ها */
+textarea:focus {
+    border-color: #00ffc6;
+    box-shadow: 0 0 10px rgba(0, 255, 198, 0.5);
 }
 
 button {
-    flex: 1 1 calc(25% - 10px); /* حداکثر ۴ دکمه در یک ردیف */
+    flex: 1 1 calc(25% - 10px);
     padding: 10px;
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.25);
+    background: linear-gradient(145deg, rgba(0,255,198,0.2), rgba(0,255,198,0.05));
+    color: #00ffc6;
+    border: 1px solid rgba(0,255,198,0.5);
     border-radius: 12px;
     cursor: pointer;
     transition: 0.3s;
-    min-width: 80px; /* برای موبایل یا زمانی که تعداد دکمه کمتر از ۴ است */
+    min-width: 80px;
 }
 
 button:hover {
-    background: rgba(255,255,255,0.35);
+    background: rgba(0,255,198,0.3);
+    box-shadow: 0 0 15px rgba(0,255,198,0.5);
+    transform: translateY(-2px);
 }
 
 #status {
     text-align: center;
     font-size: 13px;
-    color: #7CFF7C;
+    color: #00ffc6;
 }
 
-
-#man {
-    animation: man 2.5s ease-in-out infinite;
+h1, h2 {
+    text-align: center;
+    color: #00ffc6;
+    text-shadow: 0 0 8px rgba(0,255,198,0.7);
 }
-
-@keyframes man {
-    0% {
-        text-shadow: 0 0 5px rgba(255,255,255,0.3);
-        box-shadow: 0 0 10px rgba(255,255,255,0.15);
-        opacity: 0.8;
-    }
-    50% {
-        text-shadow: 0 0 20px rgba(255,255,255,0.9);
-        box-shadow: 0 0 30px rgba(255,255,255,0.4);
-        opacity: 1;
-    }
-    100% {
-        text-shadow: 0 0 5px rgba(255,255,255,0.3);
-        box-shadow: 0 0 10px rgba(255,255,255,0.15);
-        opacity: 0.8;
-    }
-}
-
-
-.h1-glow {
-    position: relative;
-    padding: 20px 40px;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #fff;
-    overflow: hidden; /* مهم برای clip کردن افکت */
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    flex-direction: column;
 }
 
-/* خط برق */
-.h1-glow::after {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        120deg,
-        rgba(255,255,255,0.0) 0%,
-        rgba(255,255,255,0.6) 50%,
-        rgba(255,255,255,0.0) 100%
-    );
-    transform: rotate(45deg);
-    animation: shine 2s linear infinite;
+.glass {
+    width: 420px;
+    padding: 30px;
+    background: rgba(20,20,20,0.75);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
 }
 
-/* حرکت نور */
-@keyframes shine {
-    0% {
-        transform: translateX(-100%) rotate(45deg);
-    }
-    100% {
-        transform: translateX(100%) rotate(45deg);
-    }
+textarea {
+    width: 100%;
+    height: 100px;
+    padding: 12px;
+    resize: none;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    outline: none;
+    font-family: 'Roboto Mono', monospace;
+    transition: 0.3s;
 }
-.h{
-     text-align: center;
-    
+
+textarea:focus {
+    border-color: #00ffc6;
+    box-shadow: 0 0 10px rgba(0, 255, 198, 0.5);
+}
+
+button {
+    flex: 1 1 calc(25% - 10px);
+    padding: 10px;
+    background: linear-gradient(145deg, rgba(0,255,198,0.2), rgba(0,255,198,0.05));
+    color: #00ffc6;
+    border: 1px solid rgba(0,255,198,0.5);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    min-width: 80px;
+}
+
+button:hover {
+    background: rgba(0,255,198,0.3);
+    box-shadow: 0 0 15px rgba(0,255,198,0.5);
+    transform: translateY(-2px);
+}
+
+#status {
+    text-align: center;
+    font-size: 13px;
+    color: #00ffc6;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #00ffc6;
+    text-shadow: 0 0 8px rgba(0,255,198,0.7);
 }
 
 </style>
@@ -201,9 +197,7 @@ button:hover {
 <button onclick="sendData()">اضافه کن</button>
 <button onclick="add001()">speak</button>
 <button onclick="add002()">box</button>
-
 <button onclick="add003()">mute</button>
-<button onclick="up()">upload</button>
 <button onclick="addCustom()">Custom</button>
 
 
@@ -227,18 +221,12 @@ function add001() {
 }
 
 function add002() {
-    let text1 = prompt("Please enter your text");
-    let text2 = prompt("Please enter your titele");
-    appendData("002:"+text1+":"+text2);
+    appendData("002");
 }
 function add003() {
     appendData("003");
 }
-function up(){
-    let path = prompt("what is path ?");
-    let file_type= prompt("what is File type ? ");
-    appendData("004:"+path+":"+file_type);
-}
+
 function appendData(text) {
     fetch("", {
         method: "POST",

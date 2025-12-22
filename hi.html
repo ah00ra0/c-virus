@@ -1,0 +1,183 @@
+<?php
+$file = __DIR__ . "/man.txt";
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["data"])) {
+    file_put_contents($file, $_POST["data"].PHP_EOL, FILE_APPEND);
+    echo "saved"; exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>iOS Style Dock + Add Box</title>
+<style>
+* { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin:0; padding:0; }
+body {
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  background: linear-gradient(270deg,#0f0c29,#302b63,#24243e);
+  background-size:600% 600%; animation: gradientMove 15s ease infinite;
+  color:#fff; padding-top:60px;
+}
+@keyframes gradientMove {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+/* Glass Main Box */
+.main-box {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  border-radius: 20px; border:1px solid rgba(255,255,255,0.15);
+  box-shadow:0 20px 40px rgba(0,0,0,0.5);
+  padding:25px 30px; width:400px; display:flex; flex-direction:column; gap:15px; text-align:center;
+  animation: floatUp 1.5s ease-out forwards;
+}
+@keyframes floatUp {0%{transform:translateY(40px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+
+textarea {width:100%; height:100px; padding:12px; resize:none; background:rgba(0,0,0,0.6); color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:14px; outline:none; font-size:15px;}
+
+button.add-btn {
+  padding:15px; border-radius:18px; border:none; background:#32d74b; color:#fff; font-weight:600; cursor:pointer; font-size:16px;
+  transition:transform 0.2s, background 0.2s;
+}
+button.add-btn:hover {background:#28b337; transform:scale(1.05);}
+
+/* Dock Bottom */
+.dock {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background: rgba(255,255,255,0.08); backdrop-filter: blur(14px);
+  border-radius: 20px; border:1px solid rgba(255,255,255,0.15); padding:10px 20px; display:flex; gap:12px; box-shadow:0 10px 35px rgba(0,0,0,0.5);
+}
+.dock button {flex:0 0 auto; padding:12px 20px; border-radius:16px; border:none; background:rgba(255,255,255,0.15); color:#fff; cursor:pointer; transition:0.25s; font-weight:500;}
+.dock button:hover {background:rgba(255,255,255,0.35); transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.4);}
+
+/* Modal */
+.modal {display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.3); backdrop-filter:blur(6px);}
+.modal-content {
+  position:fixed; bottom:-100%; left:50%; transform:translateX(-50%) scale(0.9);
+  background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); border-radius:25px 25px 10px 10px;
+  padding:25px 20px 35px 20px; width:90%; max-width:400px; display:flex; flex-direction:column; gap:15px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.5);
+  transition: bottom 0.8s cubic-bezier(0.25,1,0.5,1), transform 0.8s cubic-bezier(0.25,1,0.5,1);
+}
+.modal.show .modal-content {bottom:50px; transform:translateX(-50%) scale(1);}
+.modal h2{text-align:center;margin:0; font-weight:500;}
+.modal-input {width:100%; padding:12px; border-radius:14px; border:none; outline:none; background:rgba(0,0,0,0.6); color:#fff; font-size:15px;}
+.modal-buttons{display:flex; gap:12px; justify-content:center; margin-top:10px;}
+button.modal-send{flex:1;padding:12px 0;border-radius:16px;border:none;background:#32d74b;color:#fff;font-weight:600;font-size:15px;transition:0.2s;}
+button.modal-send:hover{background:#28b337; transform:scale(1.05);}
+.close{align-self:flex-end;font-size:24px; cursor:pointer; color:#fff; padding:2px 6px; transition:0.2s;}
+.close:hover{color:#ff3b30;}
+</style>
+</head>
+<body>
+
+<div class="main-box">
+<h2>Append & Read Once</h2>
+<textarea id="data" placeholder="متن خود را وارد کنید..."></textarea>
+<button class="add-btn" onclick="sendData()">اضافه کن</button>
+<p id="status"></p>
+</div>
+
+<!-- Dock -->
+<div class="dock">
+<button onclick="openModal('modalSpeak')">Speak</button>
+<button onclick="openModal('modalBox')">Box</button>
+<button onclick="openModal('modalMute')">Mute</button>
+<button onclick="openModal('modalCustom')">Custom</button>
+<button onclick="openModal('modalMain')">Main Popup</button>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="modalMain">
+  <div class="modal-content">
+    <span class="close" data-modal="modalMain">&times;</span>
+    <h2>Main Popup</h2>
+    <input type="text" class="modal-input" id="input1" placeholder="ورودی ۱">
+    <input type="text" class="modal-input" id="input2" placeholder="ورودی ۲">
+    <div class="modal-buttons">
+      <button class="modal-send" id="sendBtnMain">ارسال</button>
+      <button class="modal-send" onclick="window.open('https://www.google.com','_blank')">گوگل</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalSpeak">
+  <div class="modal-content">
+    <span class="close" data-modal="modalSpeak">&times;</span>
+    <h2>Speak</h2>
+    <input type="text" class="modal-input" placeholder="متن Speak">
+    <div class="modal-buttons">
+      <button class="modal-send" onclick="alert('Speak sent')">ارسال</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalBox">
+  <div class="modal-content">
+    <span class="close" data-modal="modalBox">&times;</span>
+    <h2>Box</h2>
+    <input type="text" class="modal-input" placeholder="متن Box">
+    <div class="modal-buttons">
+      <button class="modal-send" onclick="alert('Box sent')">ارسال</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalMute">
+  <div class="modal-content">
+    <span class="close" data-modal="modalMute">&times;</span>
+    <h2>Mute</h2>
+    <input type="text" class="modal-input" placeholder="متن Mute">
+    <div class="modal-buttons">
+      <button class="modal-send" onclick="alert('Mute sent')">ارسال</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalCustom">
+  <div class="modal-content">
+    <span class="close" data-modal="modalCustom">&times;</span>
+    <h2>Custom</h2>
+    <input type="text" class="modal-input" placeholder="متن Custom">
+    <div class="modal-buttons">
+      <button class="modal-send" onclick="alert('Custom sent')">ارسال</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sendData() {
+    let text = document.getElementById("data").value;
+    fetch("", {method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded"}, body:"data="+encodeURIComponent(text)})
+    .then(()=>{document.getElementById("status").innerText="✅ اضافه شد"; document.getElementById("data").value="";});
+}
+
+function openModal(modalId){
+  const modal = document.getElementById(modalId);
+  modal.style.display='block';
+  setTimeout(()=>modal.classList.add('show'),10);
+}
+
+document.querySelectorAll('.close').forEach(el=>{
+  el.addEventListener('click',()=>{
+    const modal=document.getElementById(el.getAttribute('data-modal'));
+    modal.classList.remove('show');
+    setTimeout(()=>modal.style.display='none',800);
+  });
+});
+
+window.addEventListener('click',e=>{
+  if(e.target.classList.contains('modal')){
+    e.target.classList.remove('show');
+    setTimeout(()=>e.target.style.display='none',800);
+  }
+});
+
+document.getElementById('sendBtnMain').addEventListener('click',()=>{
+  const val1=document.getElementById('input1').value;
+  const val2=document.getElementById('input2').value;
+  alert(`سلام! شما وارد کردید:\nورودی ۱: ${val1}\nورودی ۲: ${val2}`);
+});
+</script>
+
+</body>
+</html>

